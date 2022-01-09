@@ -227,7 +227,7 @@ impl PgConfig {
                 .into()
         });
 
-        eprintln!("running '{}' with args '{}'", pg_config, arg);
+        eprintln!("running '{:?}' with args '{}'", pg_config, arg);
 
         match Command::new(&pg_config).arg(arg).output() {
             Ok(output) => Ok(String::from_utf8(output.stdout).unwrap().trim().to_string()),
