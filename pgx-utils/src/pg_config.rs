@@ -230,7 +230,10 @@ impl PgConfig {
         eprintln!("running '{:?}' with args '{}'", pg_config, arg);
 
         match Command::new(&pg_config).arg(arg).output() {
-            Ok(output) => Ok(String::from_utf8(output.stdout).unwrap().trim().to_string()),
+            Ok(output) => {
+                eprintln!("stderr: {}", String::from_utf8(output.stderr).unwrap());
+                Ok(String::from_utf8(output.stdout).unwrap().trim().to_string())
+            },
             Err(e) => match e.kind() {
                 ErrorKind::NotFound => Err(std::io::Error::new(
                     ErrorKind::NotFound,
