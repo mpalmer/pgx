@@ -234,15 +234,15 @@ impl Spi {
                 // see https://github.com/zombodb/pgx/issues/17
                 let copied_datum = match result {
                     Some(result) => {
-                        eprintln!("SPI call returned Some(something)");
+                        warning!("SPI call returned Some(something)");
                         let as_datum = result.into_datum();
                         if as_datum.is_none() {
                             // SPI function returned Some(()), which means we just want to return None
-                            eprintln!("SPI call returned Some(()), fuck!");
+                            warning!("SPI call returned Some(()), fuck!");
                             None
                         } else {
                             unsafe {
-                                eprintln!("Extracting data from datum in memory context");
+                                warning!("Extracting data from datum in memory context");
                                 R::from_datum_in_memory_context(
                                     outer_memory_context,
                                     as_datum.expect("SPI result datum was NULL"),
@@ -253,7 +253,7 @@ impl Spi {
                         }
                     }
                     None => {
-                        eprintln!("SPI call returned None!");
+                        warning!("SPI call returned None!");
                         None
                     }
                 };
