@@ -123,7 +123,7 @@ impl Spi {
         Spi::connect(|client| {
             warning!("Getting one value from query '{}'", query);
             let res = client.select(query, Some(1), Some(args));
-            warning!("Result set returned {} rows", res.length());
+            warning!("Result set returned {} rows", res.len());
             Ok(res.first().get_one::<A>())
 
         })
