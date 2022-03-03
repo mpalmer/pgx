@@ -121,9 +121,9 @@ impl Spi {
         args: Vec<(PgOid, Option<pg_sys::Datum>)>,
     ) -> Option<A> {
         Spi::connect(|client| {
-            warning!(format!("Getting one value from query '{}'", query));
+            warning!("Getting one value from query '{}'", query);
             let res = client.select(query, Some(1), Some(args));
-            warning!(format!("Result set returned {} rows", res.length()));
+            warning!("Result set returned {} rows", res.length());
             Ok(res.first().get_one::<A>())
 
         })
