@@ -234,12 +234,15 @@ impl Spi {
                 // see https://github.com/zombodb/pgx/issues/17
                 let copied_datum = match result {
                     Some(result) => {
+                        eprintln!("SPI call returned Some({:?})", result);
                         let as_datum = result.into_datum();
                         if as_datum.is_none() {
                             // SPI function returned Some(()), which means we just want to return None
+                            eprintln!("SPI call returned Some(()), fuck!", result);
                             None
                         } else {
                             unsafe {
+                                eprintln!("Extracting data from datum in memory context", result);
                                 R::from_datum_in_memory_context(
                                     outer_memory_context,
                                     as_datum.expect("SPI result datum was NULL"),
@@ -249,6 +252,7 @@ impl Spi {
                             }
                         }
                     }
+                    eprintln!("SPI call returned None!", result);
                     None => None,
                 };
 
@@ -484,7 +488,7 @@ impl SpiHeapTupleData {
         data
     }
 
-    /// Get a typed Datum value from this HeapTuple by its ordinal position.  
+    /// Get a typed Datum value from this HeapTuple by its ordinal position.
     ///
     /// The ordinal position is 1-based
     #[deprecated(since = "0.1.6", note = "Please use the `by_ordinal` function instead")]
@@ -495,7 +499,7 @@ impl SpiHeapTupleData {
         }
     }
 
-    /// Get a typed Datum value from this HeapTuple by its ordinal position.  
+    /// Get a typed Datum value from this HeapTuple by its ordinal position.
     ///
     /// The ordinal position is 1-based.
     ///
@@ -510,7 +514,7 @@ impl SpiHeapTupleData {
         }
     }
 
-    /// Get a typed Datum value from this HeapTuple by its field name.  
+    /// Get a typed Datum value from this HeapTuple by its field name.
     ///
     /// If the specified name does not exist a `Err(SpiError::Noattribute)` is returned
     pub fn by_name(&self, name: &str) -> std::result::Result<&SpiHeapTupleDataEntry, SpiError> {
@@ -525,7 +529,7 @@ impl SpiHeapTupleData {
         }
     }
 
-    /// Get a mutable typed Datum value from this HeapTuple by its ordinal position.  
+    /// Get a mutable typed Datum value from this HeapTuple by its ordinal position.
     ///
     /// The ordinal position is 1-based.
     ///
@@ -540,7 +544,7 @@ impl SpiHeapTupleData {
         }
     }
 
-    /// Get a mutable typed Datum value from this HeapTuple by its field name.  
+    /// Get a mutable typed Datum value from this HeapTuple by its field name.
     ///
     /// If the specified name does not exist a `Err(SpiError::Noattribute)` is returned
     pub fn by_name_mut(
@@ -631,7 +635,7 @@ impl Index<usize> for SpiHeapTupleData {
     }
 }
 
-/// Provide named indexing into a `SpiHeapTupleData`.  
+/// Provide named indexing into a `SpiHeapTupleData`.
 ///
 /// If the field name doesn't exist, it will panic
 impl Index<&str> for SpiHeapTupleData {
@@ -642,7 +646,7 @@ impl Index<&str> for SpiHeapTupleData {
     }
 }
 
-/// Provide mutable ordinal indexing into a `SpiHeapTupleData`.  
+/// Provide mutable ordinal indexing into a `SpiHeapTupleData`.
 ///
 /// If the index is out of bounds, it will panic
 impl IndexMut<usize> for SpiHeapTupleData {
@@ -651,7 +655,7 @@ impl IndexMut<usize> for SpiHeapTupleData {
     }
 }
 
-/// Provide mutable named indexing into a `SpiHeapTupleData`.  
+/// Provide mutable named indexing into a `SpiHeapTupleData`.
 ///
 /// If the field name doesn't exist, it will panic
 impl IndexMut<&str> for SpiHeapTupleData {
