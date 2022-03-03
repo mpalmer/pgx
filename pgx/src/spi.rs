@@ -253,8 +253,8 @@ impl Spi {
                         }
                     }
                     None => {
-                        eprintln!("SPI call returned None!", result);
-                        None,
+                        eprintln!("SPI call returned None!");
+                        None
                     }
                 };
 
