@@ -120,7 +120,13 @@ impl Spi {
         query: &str,
         args: Vec<(PgOid, Option<pg_sys::Datum>)>,
     ) -> Option<A> {
-        Spi::connect(|client| Ok(client.select(query, Some(1), Some(args)).first().get_one()))
+        Spi::connect(|client| {
+            warning!(format!("Getting one value from query '{}'", query));
+            let res = client.select(query, Some(1), Some(args));
+            warning!(format!("Result set returned {} rows", res.length()));
+            Ok(res.first().get_one::<A>())
+
+        })
     }
 
     pub fn get_two_with_args<A: FromDatum + IntoDatum, B: FromDatum + IntoDatum>(
